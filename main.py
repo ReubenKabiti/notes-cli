@@ -1,5 +1,6 @@
+#! /usr/bin/python3
 import sqlite3 as sql
-from typing import *
+from typing import List, Callable
 import sys
 import os
 
