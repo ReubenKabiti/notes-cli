@@ -118,8 +118,11 @@ class Program:
         cur.close()
 
     def get_option(self):
-        o = input("Enter option [b - back]: ")
-        return o
+        try:
+            o = input("Enter option [b - back]: ")
+            return o
+        except:
+            pass
 
     def loop(self):
         prev_err = None
@@ -127,7 +130,10 @@ class Program:
         while True:
             if not self.view_stack:
                 self.exit()
-            os.system("clear")
+            if os.uname()[0] == "Linux":
+                os.system("clear")
+            else:
+                os.system("cls")
             if prev_err:
                 print(prev_err)
             print(self.view_stack[-1])
