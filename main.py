@@ -3,14 +3,6 @@ from typing import List
 import sys
 import os
 
-
-'''
------View notes----
-[1] - my day
-[2] - training
-Enter note id to view note or b to go back: 
-'''
-
 class Arg:
     def __init__(self, name, desc, default=None):
         self.name = name
