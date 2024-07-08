@@ -1,26 +1,26 @@
 import sqlite3 as sql
-from typing import List
+from typing import *
 import sys
 import os
 
 class Arg:
-    def __init__(self, name, desc, default=None):
+    def __init__(self, name: str, desc: str | None, default = None):
         self.name = name
         self.desc = desc
         self.default = default
 
 class Option:
-    def __init__(self, name, cb, args=[]):
+    def __init__(self, name: str, cb: Callable, args: List[Arg] = []):
         self.name = name
         self.cb = cb
         self.args = args
 
 class View:
-    def __init__(self, name, options: List[Option]):
+    def __init__(self, name: str, options: List[Option]):
         self.name = name
         self.options = options
 
-    def execute(self, option_id):
+    def execute(self, option_id: int) -> None:
         args = {}
         if option_id >= len(self.options):
             raise Exception("Please enter a valid option")
@@ -36,21 +36,21 @@ class View:
         if option.cb:
             option.cb(**args)
     
-    def __repr__(self):
+    def __repr__(self) -> str:
         out = f"{self.name}\n"
         for i, option in enumerate(self.options):
             out += f"[{i + 1}] - {option.name}\n"
         return out
 
 class Note:
-    def __init__(self, name, desc, id):
+    def __init__(self, name: str, desc: str | None, id: int):
         self.name = name
         self.desc = desc
         self.id = id
 
 
 class NotesView(View):
-    def __init__(self, notes, view_note):
+    def __init__(self, notes: List[Note], view_note: Callable):
         options = [
                 Option(
                     name=note.name, 
@@ -63,10 +63,10 @@ class NotesView(View):
         super().__init__(name="Notes", options=options)
 
 class NoteView(View):
-    def __init__(self, note):
+    def __init__(self, note: Note):
         self.note = note
         super().__init__(name=note.name, options=[])
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"name: {self.note.name}\ndescription: {self.note.desc}\nid: {self.note.id}"
 
 class Program:
@@ -90,10 +90,10 @@ class Program:
                 ]
             ))
 
-    def goto(self, view):
+    def goto(self, view: View) -> None:
         self.view_stack.append(view)
 
-    def view_notes(self):
+    def view_notes(self) -> None:
         cur = self.con.cursor()
         result = cur.execute("select rowid, name, description from Note")
         notes = []
@@ -102,29 +102,29 @@ class Program:
         cur.close()
         self.goto(NotesView(notes=notes, view_note=self.view_note))
 
-    def view_note(self, note):
+    def view_note(self, note: Note) -> None:
         self.goto(NoteView(note))
 
-    def add_note(self, name, desc):
+    def add_note(self, name: str, desc: str) -> None:
         cur = self.con.cursor()
         cur.execute("insert into Note (name, description) values (?, ?)", (name, desc))
         self.con.commit()
         cur.close()
 
-    def delete_note(self, id):
+    def delete_note(self, id: int) -> None:
         cur = self.con.cursor()
         cur.execute("delete from Note where rowid = ?", (id,))
         self.con.commit()
         cur.close()
 
-    def get_option(self):
+    def get_option(self) -> str:
         try:
             o = input("Enter option [b - back]: ")
             return o
         except:
-            pass
+            return ""
 
-    def loop(self):
+    def loop(self) -> None:
         prev_err = None
 
         while True:
@@ -151,7 +151,7 @@ class Program:
                 continue
             prev_err = None
 
-    def exit(self):
+    def exit(self) -> None:
         self.con.close()
         sys.exit(0)
 
