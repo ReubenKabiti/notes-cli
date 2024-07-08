@@ -71,13 +71,6 @@ class NoteView(View):
 
 class Program:
     def __init__(self):
-        '''
-        [1] - View notes
-        [2] - Add note
-        [3] - Delete note
-        [4] - Edit note
-        [5] - Exit
-        '''
         if not os.path.exists("sqlite.db"):
             # create the schema
             with open("schema.sql") as file:
