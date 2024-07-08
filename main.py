@@ -125,7 +125,7 @@ class Program:
         cur.close()
 
     def get_option(self):
-        o = input("Enter option[b - back]: ")
+        o = input("Enter option [b - back]: ")
         return o
 
     def loop(self):
