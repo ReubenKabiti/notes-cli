@@ -73,15 +73,14 @@ class NoteView(View):
 class Program:
     def __init__(self):
         db_file = "sqlite.db"
-        if not os.path.exists(db_file):
-            # create the schema
-            with open("schema.sql") as file:
-                script = file.read()
-            con = sql.connect(db_file)
-            con.executescript(script)
-            con.close()
+        schema_file = "schema.sql"
 
         self.con = sql.connect(db_file)
+
+        with open(schema_file) as file:
+            script = file.read()
+            self.con.executescript(script)
+
         self.view_stack = []
         self.goto(View(
             name="Main Menu",
